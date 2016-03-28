@@ -4,6 +4,11 @@
  * and open the template in the editor.
  */
 package crypto.ecceg.test;
+import crypto.ecceg.utils.*;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,6 +21,24 @@ public class Test {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        testIO();
     }
     
+    public static void testIO() {
+        IOUtils ioutils = new IOUtils();
+        String filepath = "C:\\Users\\Michael\\Documents\\GitHub\\Crypto-ECCEG\\testfile.mkv";
+        String outputPath = "C:\\Users\\Michael\\Documents\\GitHub\\Crypto-ECCEG\\testfile2.mkv";
+        BigInteger data;
+        try {
+            data = ioutils.getData(filepath);
+            //System.out.println(data.toString(16));
+            BigInteger kali = new BigInteger("32156546876354687435746876543138576546354313854354");
+            data = data.multiply(kali);
+            ioutils.writeData(outputPath, data);
+            data = data.divide(kali);
+            ioutils.writeData(outputPath+"x", data);
+        } catch (IOException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

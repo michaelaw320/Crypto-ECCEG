@@ -5,8 +5,18 @@
  */
 package crypto.ecceg.gui;
 
+import crypto.ecceg.utils.IOUtils;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -14,6 +24,9 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class MainFrame extends javax.swing.JFrame {
 
+    private String filePath;
+    private String keyPath;
+    
     /**
      * Creates new form MainFrame
      */
@@ -36,7 +49,6 @@ public class MainFrame extends javax.swing.JFrame {
         OpenFileButton = new javax.swing.JButton();
         OpenKeyButton = new javax.swing.JButton();
         EncryptButton = new javax.swing.JButton();
-        DecryptButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         TimeTakenLabel = new javax.swing.JLabel();
@@ -47,7 +59,32 @@ public class MainFrame extends javax.swing.JFrame {
         CiphertextText = new javax.swing.JTextArea();
         jLabel4 = new javax.swing.JLabel();
         FileSizeLabel = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        FileNameLabel = new javax.swing.JLabel();
+        KeyFileLabel = new javax.swing.JLabel();
+        SaveCiphertextButton = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        OpenFileButton1 = new javax.swing.JButton();
+        OpenKeyButton1 = new javax.swing.JButton();
+        DecryptButton = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        TimeTakenLabel1 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        CiphertextTextTab2 = new javax.swing.JTextArea();
+        jLabel10 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        PlaintextTextTab2 = new javax.swing.JTextArea();
+        jLabel11 = new javax.swing.JLabel();
+        FileSizeLabel1 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        FileNameLabel1 = new javax.swing.JLabel();
+        KeyFileLabel1 = new javax.swing.JLabel();
+        SavePlaintextButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        GenerateKey = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ECCEG");
@@ -72,12 +109,15 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         EncryptButton.setText("Encrypt");
-
-        DecryptButton.setText("Decrypt");
+        EncryptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EncryptButtonActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Plaintext");
 
-        jLabel2.setText("Time Taken to Encrypt/Decrypt :");
+        jLabel2.setText("Time Taken to Encrypt :");
 
         TimeTakenLabel.setText("-");
 
@@ -93,48 +133,67 @@ public class MainFrame extends javax.swing.JFrame {
         CiphertextText.setRows(5);
         jScrollPane2.setViewportView(CiphertextText);
 
-        jLabel4.setText("Filesize after Encrypt/Decrypt :");
+        jLabel4.setText("Filesize after Encrypt :");
 
         FileSizeLabel.setText("-");
+
+        jLabel6.setText("File Name :");
+
+        jLabel7.setText("Key File    :");
+
+        FileNameLabel.setText("-");
+
+        KeyFileLabel.setText("-");
+
+        SaveCiphertextButton.setText("Save Ciphertext");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(OpenFileButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(OpenKeyButton))
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 340, Short.MAX_VALUE)
+                        .addComponent(EncryptButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(KeyFileLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel4))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(OpenFileButton)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(OpenKeyButton))
-                                    .addComponent(jLabel1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FileNameLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(EncryptButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(DecryptButton))
                             .addComponent(TimeTakenLabel)
-                            .addComponent(FileSizeLabel))))
+                            .addComponent(FileSizeLabel))
+                        .addGap(68, 68, 68))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(SaveCiphertextButton)))
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {DecryptButton, EncryptButton, OpenFileButton, OpenKeyButton});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {EncryptButton, OpenFileButton, OpenKeyButton});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,16 +202,19 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(OpenFileButton)
                     .addComponent(OpenKeyButton)
-                    .addComponent(EncryptButton)
-                    .addComponent(DecryptButton))
-                .addGap(6, 6, 6)
+                    .addComponent(EncryptButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(TimeTakenLabel))
+                    .addComponent(TimeTakenLabel)
+                    .addComponent(jLabel6)
+                    .addComponent(FileNameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(FileSizeLabel))
+                    .addComponent(FileSizeLabel)
+                    .addComponent(jLabel7)
+                    .addComponent(KeyFileLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -161,20 +223,163 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(SaveCiphertextButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Encrypt / Decrypt", jPanel1);
+        jTabbedPane1.addTab("Encrypt", jPanel1);
+
+        OpenFileButton1.setText("Open File");
+        OpenFileButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OpenFileButton1ActionPerformed(evt);
+            }
+        });
+
+        OpenKeyButton1.setText("Open Key");
+        OpenKeyButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OpenKeyButton1ActionPerformed(evt);
+            }
+        });
+
+        DecryptButton.setText("Decrypt");
+        DecryptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DecryptButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Ciphertext");
+
+        jLabel9.setText("Time Taken to Decrypt :");
+
+        TimeTakenLabel1.setText("-");
+
+        CiphertextTextTab2.setEditable(false);
+        CiphertextTextTab2.setColumns(20);
+        CiphertextTextTab2.setRows(5);
+        jScrollPane3.setViewportView(CiphertextTextTab2);
+
+        jLabel10.setText("Plaintext");
+
+        PlaintextTextTab2.setEditable(false);
+        PlaintextTextTab2.setColumns(20);
+        PlaintextTextTab2.setRows(5);
+        jScrollPane4.setViewportView(PlaintextTextTab2);
+
+        jLabel11.setText("Filesize after Decrypt :");
+
+        FileSizeLabel1.setText("-");
+
+        jLabel12.setText("File Name :");
+
+        jLabel13.setText("Key File    :");
+
+        FileNameLabel1.setText("-");
+
+        KeyFileLabel1.setText("-");
+
+        SavePlaintextButton.setText("Save Ciphertext");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(OpenFileButton1)
+                                .addGap(18, 18, 18)
+                                .addComponent(OpenKeyButton1))
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(DecryptButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(KeyFileLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel11))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FileNameLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 339, Short.MAX_VALUE)
+                                .addComponent(jLabel9)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TimeTakenLabel1)
+                            .addComponent(FileSizeLabel1))
+                        .addGap(68, 68, 68))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(SavePlaintextButton)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(OpenFileButton1)
+                    .addComponent(OpenKeyButton1)
+                    .addComponent(DecryptButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(TimeTakenLabel1)
+                    .addComponent(jLabel12)
+                    .addComponent(FileNameLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(FileSizeLabel1)
+                    .addComponent(jLabel13)
+                    .addComponent(KeyFileLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(SavePlaintextButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Decrypt", jPanel4);
+
+        GenerateKey.setText("Generate Key");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 615, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(GenerateKey)
+                .addContainerGap(506, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 438, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(GenerateKey)
+                .addContainerGap(420, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Generate Keys", jPanel2);
@@ -196,22 +401,102 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 482, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addContainerGap())
         );
+
+        jTabbedPane1.getAccessibleContext().setAccessibleName("Encrypt");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void OpenFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFileButtonActionPerformed
-        // TODO add your handling code here:
+
+        final JFileChooser fc = new JFileChooser();
+        try {
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+                filePath = fc.getSelectedFile().getPath();
+                
+                FileNameLabel.setText(fc.getSelectedFile().getName());
+                
+                //Show plaintext box
+                String filetype = Files.probeContentType(fc.getSelectedFile().toPath());
+                if(filetype == null) {
+                    filetype = "Undefined";
+                }
+                if(filetype.contains("text")) {
+                    String plaintext = IOUtils.getStringData(filePath);
+                    PlaintextText.setText(plaintext);
+                } else {
+                    PlaintextText.setText("Not showing non text file");
+                }
+                
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error in loading File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_OpenFileButtonActionPerformed
 
     private void OpenKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenKeyButtonActionPerformed
         // TODO add your handling code here:
+        final JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Key File (*.pub, *.pri)", "pub", "pri"));
+        
+        //try {
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+                keyPath = fc.getSelectedFile().getPath();
+                
+                KeyFileLabel.setText(keyPath);
+                
+            }
+        /*} catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error in loading Key\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }*/
     }//GEN-LAST:event_OpenKeyButtonActionPerformed
+
+    private void OpenFileButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFileButton1ActionPerformed
+        final JFileChooser fc = new JFileChooser();
+        try {
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+                filePath = fc.getSelectedFile().getPath();
+                
+                FileNameLabel1.setText(fc.getSelectedFile().getName());
+                
+                CiphertextTextTab2.setText(IOUtils.formattedOutput(IOUtils.getData(filePath)));
+                
+               
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error in loading File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_OpenFileButton1ActionPerformed
+
+    private void OpenKeyButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenKeyButton1ActionPerformed
+        // Clone of OpenKeyButtonActionPerformed
+        OpenKeyButtonActionPerformed(evt);
+        KeyFileLabel.setText("-");
+        KeyFileLabel1.setText(keyPath);
+    }//GEN-LAST:event_OpenKeyButton1ActionPerformed
+
+    private void EncryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EncryptButtonActionPerformed
+        // TODO add your handling code here:
+        
+                String filesize;
+        try {
+            filesize = Long.toString(IOUtils.getFilesize(filePath)) + " bytes";
+            FileSizeLabel.setText(filesize);
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_EncryptButtonActionPerformed
+
+    private void DecryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DecryptButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DecryptButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -250,22 +535,46 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea CiphertextText;
+    private javax.swing.JTextArea CiphertextTextTab2;
     private javax.swing.JButton DecryptButton;
     private javax.swing.JButton EncryptButton;
+    private javax.swing.JLabel FileNameLabel;
+    private javax.swing.JLabel FileNameLabel1;
     private javax.swing.JLabel FileSizeLabel;
+    private javax.swing.JLabel FileSizeLabel1;
+    private javax.swing.JButton GenerateKey;
+    private javax.swing.JLabel KeyFileLabel;
+    private javax.swing.JLabel KeyFileLabel1;
     private javax.swing.JButton OpenFileButton;
+    private javax.swing.JButton OpenFileButton1;
     private javax.swing.JButton OpenKeyButton;
+    private javax.swing.JButton OpenKeyButton1;
     private javax.swing.JTextArea PlaintextText;
+    private javax.swing.JTextArea PlaintextTextTab2;
+    private javax.swing.JButton SaveCiphertextButton;
+    private javax.swing.JButton SavePlaintextButton;
     private javax.swing.JLabel TimeTakenLabel;
+    private javax.swing.JLabel TimeTakenLabel1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

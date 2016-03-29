@@ -26,6 +26,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private String filePath;
     private String keyPath;
+    private BigInteger processedData;
     
     /**
      * Creates new form MainFrame
@@ -146,6 +147,11 @@ public class MainFrame extends javax.swing.JFrame {
         KeyFileLabel.setText("-");
 
         SaveCiphertextButton.setText("Save Ciphertext");
+        SaveCiphertextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveCiphertextButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -282,6 +288,11 @@ public class MainFrame extends javax.swing.JFrame {
         KeyFileLabel1.setText("-");
 
         SavePlaintextButton.setText("Save Ciphertext");
+        SavePlaintextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SavePlaintextButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -465,8 +476,7 @@ public class MainFrame extends javax.swing.JFrame {
                 FileNameLabel1.setText(fc.getSelectedFile().getName());
                 
                 CiphertextTextTab2.setText(IOUtils.formattedOutput(IOUtils.getData(filePath)));
-                
-               
+
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Error in loading File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -497,6 +507,20 @@ public class MainFrame extends javax.swing.JFrame {
     private void DecryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DecryptButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_DecryptButtonActionPerformed
+
+    private void SaveCiphertextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveCiphertextButtonActionPerformed
+        try {
+            // TODO add your handling code here:
+            IOUtils.writeData("TO DO FILE CHOOSER FOR SAVE", processedData);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error in saving File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_SaveCiphertextButtonActionPerformed
+
+    private void SavePlaintextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SavePlaintextButtonActionPerformed
+        // TODO add your handling code here:
+        SaveCiphertextButtonActionPerformed(evt);
+    }//GEN-LAST:event_SavePlaintextButtonActionPerformed
 
     /**
      * @param args the command line arguments

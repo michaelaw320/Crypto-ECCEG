@@ -37,15 +37,20 @@ public class Test {
             System.out.println("[("+p1.getX()+","+p1.getY()+")"+", ("+p2.getX()+","+p2.getY()+")]");
         }
         System.out.println("Decrypt-print plain text");
-        List<BigInteger> plain=elgamal.decrypt(result);
+        ArrayList<BigInteger> plain=elgamal.decrypt(result);
         for(BigInteger pm:plain){
             System.out.println(pm);
         }
+        try {
+            IOUtils.writeDataFromList("testfile2.txt", plain);
 //        EllipticalCurve.Point p1=new EllipticalCurve.Point(new BigInteger("22"),new BigInteger("17"));
 //        EllipticalCurve.Point p2=new EllipticalCurve.Point(new BigInteger("14"),new BigInteger("7"));
 //        EllipticalCurve elgamal=new EllipticalCurve(new BigInteger("29"));
 //        EllipticalCurve.Point res=elgamal.substract(p1,p2);
 //        System.out.println("("+res.getX()+","+res.getY()+")");
+        } catch (IOException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void testIO() {

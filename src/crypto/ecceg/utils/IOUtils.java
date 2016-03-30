@@ -47,25 +47,27 @@ public class IOUtils {
         ArrayList<BigInteger> ret = new ArrayList<>();
         Path path = Paths.get(address);
         byte[] data = Files.readAllBytes(path);
-        int len = data.length;
-        int padding = 8 - len%8;
-        for(int i = 0; i < len; i+=8) {
-            StringBuilder sb = new StringBuilder();
-            for(int j = 0; j < 8 && (i+j < len); j++) {
-                sb.append(data[i+j]);
-            }
-            ret.add(new BigInteger(sb.toString()));
+        byte[][] matData = transformToTwoD(data, 16);
+        for (byte[] matData1 : matData) {
+            ret.add(new BigInteger(matData1));
         }
-//        if(padding != 0 && padding != 8) {
-//            BigInteger lastInt = ret.get(ret.size()-1);
-//            ret.remove(ret.size()-1);
-//            String lastStr = lastInt.toString();
-//            StringBuilder sb = new StringBuilder(lastStr);
-//            for(int i = len; i < len+padding; i++) {
-//                sb.append("00");
-//            }
-//            ret.add(new BigInteger(sb.toString()));
-//        }
+        return ret;
+    }
+    
+    private static byte[][] transformToTwoD(byte[] oneD, int width) {
+        int len = oneD.length;
+        int height = (len/width) + 1;
+        byte[][] ret = new byte[height][width];
+        int count=0;
+        for(int i=0;i<height;i++)
+        {
+            for(int j=0;j<width;j++)
+            {
+                if(count==oneD.length) break;
+                ret[i][j]=oneD[count];
+                count++;
+            }
+        }
         return ret;
     }
     
@@ -73,6 +75,33 @@ public class IOUtils {
         Path path = Paths.get(address);
         byte[] data = toWrite.toByteArray();
         Files.write(path, data);
+    }
+    
+    public static void writeDataFromList(String address, ArrayList<BigInteger> toWrite) throws IOException {
+        ArrayList<Byte[]> data = new ArrayList<>();
+        for(BigInteger bi : toWrite) {
+            byte[] byteArr = bi.toByteArray();
+            Byte[] ByteArr = new Byte[byteArr.length];
+            for(int i = 0; i < byteArr.length; i++) ByteArr[i] = byteArr[i];
+            data.add(ByteArr);
+        }
+        int lastElLen = 0;
+        for(lastElLen = 0; lastElLen < data.get(data.size()-1).length; lastElLen++) {
+            if (data.get(data.size()-1)[lastElLen] == 0) {
+                break;
+            }
+        }
+        byte[] combinedArr = new byte[((data.size()-1) * data.get(0).length) + lastElLen];
+        int j = 0;
+        for(Byte[] arr : data) {
+            for (Byte arrEl : arr) {
+                combinedArr[j] = arrEl;
+                j++;
+                if (j == combinedArr.length) break;
+            }
+        }
+        BigInteger combined = new BigInteger(combinedArr);
+        writeData(address, combined);
     }
     
     public static String formattedOutput(BigInteger data) {

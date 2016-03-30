@@ -37,20 +37,23 @@ public class ECCEG {
         BigInteger satu=new BigInteger("1");
         BigInteger dua=new BigInteger("2");
         BigInteger empat=new BigInteger("4");
-        BigInteger y=null;
+        BigInteger x=null,y=null,iterator;
+        iterator=BigInteger.ZERO;
         while(!found){
-            input=input.multiply(kstatic).add(satu).mod(prime);
-            BigInteger a= input.pow(3).multiply(ecc.eccEquation[0]).
-                    add(input.pow(2).multiply(ecc.eccEquation[1])).
-                    add(input.multiply(ecc.eccEquation[2])).
-                    add(input.multiply(ecc.eccEquation[3])).mod(prime);
+            iterator=iterator.add(satu);
+            x=input.multiply(kstatic).add(iterator).mod(prime);
+            BigInteger a= x.pow(3).multiply(ecc.eccEquation[0]).
+                    add(x.pow(2).multiply(ecc.eccEquation[1])).
+                    add(x.multiply(ecc.eccEquation[2])).
+                    add(ecc.eccEquation[3]).mod(prime);
+            //System.out.println(ecc.eccEquation[0]+"x^3+"+ecc.eccEquation[1]+"x^2+"+ecc.eccEquation[2]+"x+"+ecc.eccEquation[3]);
             //Find Y
             if(a.modPow(prime.subtract(satu).divide(dua),prime).compareTo(satu)==0){//Ada solusi Y
                 y=a.modPow(prime.add(satu).divide(empat),prime);
                 found=true;
             }
         }
-        return new EllipticalCurve.Point(input,y);
+        return new EllipticalCurve.Point(x,y);
     }
 
     private BigInteger decodeMessage(EllipticalCurve.Point p, BigInteger k){
@@ -71,10 +74,12 @@ public class ECCEG {
         publicKey= ecc.coefMultiply(privateKey,EllipticalCurve.P192.basePoint);
         System.out.println("private-key:"+privateKey+"\n"+"public-key:("+publicKey.getX()+","+publicKey.getY()+")");
         //convert each message to point
+        System.out.println("Encrypted");
         for(BigInteger m : messages){
             BigInteger k=Utils.generateK(prime);
             EllipticalCurve.Point pm = encodeMessage(m);
-            result.add(new CipherPair(ecc.coefMultiply(k,EllipticalCurve.P192.basePoint),ecc.add(pm,publicKey)));
+            //System.out.println(m+"-->"+"("+pm.getX()+","+pm.getY()+")");
+            result.add(new CipherPair(ecc.coefMultiply(k,EllipticalCurve.P192.basePoint),ecc.add(pm,ecc.coefMultiply(k,publicKey))));
         }
         return result;
     }
@@ -88,6 +93,7 @@ public class ECCEG {
         for(CipherPair c:cipher){
             EllipticalCurve.Point bi=ecc.coefMultiply(privateKey,c.getP1());
             EllipticalCurve.Point m=ecc.substract(c.getP2(),bi);
+            //System.out.println("("+m.getX()+","+m.getY()+")");
             result.add(decodeMessage(m,kstatic).mod(prime));
         }
         return result;

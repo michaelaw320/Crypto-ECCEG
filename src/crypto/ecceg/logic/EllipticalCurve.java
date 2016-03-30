@@ -48,8 +48,7 @@ public class EllipticalCurve {
     }
 
     public Point substract(Point P, Point Q){
-        Q.setX(Q.getX().negate());
-        Q.setY(Q.getY().negate());
+        Q.setY(Q.getY().negate().mod(p));
         return add(P,Q);
     }
 

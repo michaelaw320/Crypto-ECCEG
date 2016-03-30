@@ -56,16 +56,16 @@ public class IOUtils {
             }
             ret.add(new BigInteger(sb.toString()));
         }
-        if(padding != 0 && padding != 8) {
-            BigInteger lastInt = ret.get(ret.size()-1);
-            ret.remove(ret.size()-1);
-            String lastStr = lastInt.toString();
-            StringBuilder sb = new StringBuilder(lastStr);
-            for(int i = len; i < len+padding; i++) {
-                sb.append("00");
-            }
-            ret.add(new BigInteger(sb.toString()));
-        }
+//        if(padding != 0 && padding != 8) {
+//            BigInteger lastInt = ret.get(ret.size()-1);
+//            ret.remove(ret.size()-1);
+//            String lastStr = lastInt.toString();
+//            StringBuilder sb = new StringBuilder(lastStr);
+//            for(int i = len; i < len+padding; i++) {
+//                sb.append("00");
+//            }
+//            ret.add(new BigInteger(sb.toString()));
+//        }
         return ret;
     }
     

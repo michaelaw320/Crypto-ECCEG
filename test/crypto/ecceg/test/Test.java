@@ -26,29 +26,30 @@ public class Test {
     public static void main(String[] args) {
         // TODO code application logic here
         //testIO();
+        try {
         System.out.println("Plain");
         ArrayList<BigInteger> messages=testArrayInput();
         System.out.println("=======================");
         ECCEG elgamal=new ECCEG(EllipticalCurve.P192.Prime);
         ArrayList<ECCEG.CipherPair> result=elgamal.encrypt(messages);
+            IOUtils.writeCipherFile("cipherfile.txt", result);
         for(ECCEG.CipherPair pairpoint:result){
             EllipticalCurve.Point p1=pairpoint.getP1();
             EllipticalCurve.Point p2=pairpoint.getP2();
             System.out.println("[("+p1.getX()+","+p1.getY()+")"+", ("+p2.getX()+","+p2.getY()+")]");
         }
         System.out.println("Decrypt-print plain text");
-        ArrayList<BigInteger> plain=elgamal.decrypt(result);
+        //ArrayList<BigInteger> plain=elgamal.decrypt(result);
+        ArrayList<ECCEG.CipherPair> read = IOUtils.readCipherFile("cipherfile.txt");
+        ArrayList<BigInteger> plain=elgamal.decrypt(read);
         for(BigInteger pm:plain){
+
             System.out.println(pm);
         }
-        try {
+
             IOUtils.writeDataFromList("testfile2.txt", plain);
-//        EllipticalCurve.Point p1=new EllipticalCurve.Point(new BigInteger("22"),new BigInteger("17"));
-//        EllipticalCurve.Point p2=new EllipticalCurve.Point(new BigInteger("14"),new BigInteger("7"));
-//        EllipticalCurve elgamal=new EllipticalCurve(new BigInteger("29"));
-//        EllipticalCurve.Point res=elgamal.substract(p1,p2);
-//        System.out.println("("+res.getX()+","+res.getY()+")");
-        } catch (IOException ex) {
+
+        } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -1,5 +1,6 @@
 package crypto.ecceg.logic;
 
+import java.io.Serializable;
 import javafx.util.Pair;
 
 import java.math.BigInteger;
@@ -27,7 +28,7 @@ public class EllipticalCurve {
                 new BigInteger("07192b95ffc8da78631011ed6b24cdd573f977a11e794811",16));
     }
 
-    public static class Point{
+    public static class Point implements Serializable{
         BigInteger x,y; //Point (x,y)
 
         public Point(BigInteger x, BigInteger y){this.x=x;this.y=y;}

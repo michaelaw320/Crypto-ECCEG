@@ -6,6 +6,7 @@
 package crypto.ecceg.logic;
 
 import crypto.ecceg.utils.Utils;
+import java.io.Serializable;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class ECCEG {
         return p.getX().subtract(new BigInteger("1")).divide(k);
     }
 
-    public class CipherPair{
+    public static class CipherPair implements Serializable{
         EllipticalCurve.Point p1,p2;
         public CipherPair(EllipticalCurve.Point p1,EllipticalCurve.Point p2){this.p1=p1;this.p2=p2;}
         public EllipticalCurve.Point getP1(){return p1;}

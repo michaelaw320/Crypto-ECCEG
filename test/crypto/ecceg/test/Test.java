@@ -21,7 +21,8 @@ public class Test {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        testIO();
+        //testIO();
+        testUtils();
     }
     
     public static void testIO() {
@@ -39,5 +40,13 @@ public class Test {
         } catch (IOException ex) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public static void testUtils() {
+        int digit = 2;
+        BigInteger res = Utils.generateP(2);
+        System.out.println(res.toString(16));
+        BigInteger ran = Utils.generateK(res);
+        System.out.println(ran.toString(16));
     }
 }

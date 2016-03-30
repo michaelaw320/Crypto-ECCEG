@@ -5,10 +5,30 @@
  */
 package crypto.ecceg.utils;
 
+import java.math.BigInteger;
+import java.util.Random;
+
 /**
  *
  * @author Michael
  */
 public class Utils {
-    
+    public static BigInteger generateK(BigInteger p) {
+        boolean stop = false;
+        BigInteger ret = null;
+        while (!stop) {
+            Random rnd = new Random();
+            int len = rnd.nextInt(p.bitLength());
+            len += 1;
+            ret = new BigInteger(len, new Random());
+            if (ret.compareTo(p) == -1) { // ret < p
+                stop = true;
+            }
+        }
+        return ret;
+    }
+    public static BigInteger generateP(int digit) {
+        Random rnd = new Random();
+        return BigInteger.probablePrime(digit*8, rnd);
+    }
 }

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package crypto.ecceg.test;
+import crypto.ecceg.logic.EllipticalCurve;
 import crypto.ecceg.utils.*;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -22,7 +23,10 @@ public class Test {
     public static void main(String[] args) {
         // TODO code application logic here
         //testIO();
-        testUtils();
+        EllipticalCurve.Point p=new EllipticalCurve.Point(new BigInteger("5"),new BigInteger("7"));
+        EllipticalCurve ecc=new EllipticalCurve(new BigInteger("29"));
+        EllipticalCurve.Point result=ecc.coefMultiply(new BigInteger("2"),p);
+        System.out.println("("+result.getX()+","+result.getY()+")");
     }
     
     public static void testIO() {

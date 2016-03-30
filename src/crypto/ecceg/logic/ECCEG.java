@@ -5,11 +5,14 @@
  */
 package crypto.ecceg.logic;
 
+import java.math.BigInteger;
+
 /**
  *
  * @author Michael
  */
 public class ECCEG {
+
     void generatePublicPrivateKeys(){
         
     }
@@ -21,5 +24,6 @@ public class ECCEG {
     void decrypt() {
         
     }
+
     
 }

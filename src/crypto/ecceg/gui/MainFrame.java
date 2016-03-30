@@ -147,6 +147,7 @@ public class MainFrame extends javax.swing.JFrame {
         KeyFileLabel.setText("-");
 
         SaveCiphertextButton.setText("Save Ciphertext");
+        SaveCiphertextButton.setEnabled(false);
         SaveCiphertextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SaveCiphertextButtonActionPerformed(evt);
@@ -287,7 +288,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         KeyFileLabel1.setText("-");
 
-        SavePlaintextButton.setText("Save Ciphertext");
+        SavePlaintextButton.setText("Save Plaintext");
+        SavePlaintextButton.setEnabled(false);
         SavePlaintextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SavePlaintextButtonActionPerformed(evt);
@@ -501,17 +503,32 @@ public class MainFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        SaveCiphertextButton.setEnabled(true);
 
     }//GEN-LAST:event_EncryptButtonActionPerformed
 
     private void DecryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DecryptButtonActionPerformed
         // TODO add your handling code here:
+        String filesize;
+        try {
+            filesize = Long.toString(IOUtils.getFilesize(filePath)) + " bytes";
+            FileSizeLabel1.setText(filesize);
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        SavePlaintextButton.setEnabled(true);
     }//GEN-LAST:event_DecryptButtonActionPerformed
 
     private void SaveCiphertextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveCiphertextButtonActionPerformed
+        final JFileChooser fc = new JFileChooser();
         try {
             // TODO add your handling code here:
-            IOUtils.writeData("TO DO FILE CHOOSER FOR SAVE", processedData);
+             if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION){
+                String fileLocation = fc.getSelectedFile().getPath();
+                //get data
+                IOUtils.writeData(fileLocation, processedData);
+            }
+            
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Error in saving File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

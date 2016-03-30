@@ -21,7 +21,7 @@ public class Utils {
             int len = rnd.nextInt(p.bitLength());
             len += 1;
             ret = new BigInteger(len, new Random());
-            if (ret.compareTo(p) == -1) { // ret < p
+            if (ret.compareTo(p) == -1 && ret.compareTo(BigInteger.ZERO) == 1) { // ret < p && ret > 0
                 stop = true;
             }
         }

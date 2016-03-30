@@ -8,6 +8,7 @@ import crypto.ecceg.logic.EllipticalCurve;
 import crypto.ecceg.utils.*;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,10 +24,11 @@ public class Test {
     public static void main(String[] args) {
         // TODO code application logic here
         //testIO();
-        EllipticalCurve.Point p=new EllipticalCurve.Point(new BigInteger("5"),new BigInteger("7"));
-        EllipticalCurve ecc=new EllipticalCurve(new BigInteger("29"));
-        EllipticalCurve.Point result=ecc.coefMultiply(new BigInteger("2"),p);
-        System.out.println("("+result.getX()+","+result.getY()+")");
+        //EllipticalCurve.Point p=new EllipticalCurve.Point(new BigInteger("5"),new BigInteger("7"));
+        //EllipticalCurve ecc=new EllipticalCurve(new BigInteger("29"));
+        //EllipticalCurve.Point result=ecc.coefMultiply(new BigInteger("2"),p);
+        //System.out.println("("+result.getX()+","+result.getY()+")");
+        testArrayInput();
     }
     
     public static void testIO() {
@@ -52,5 +54,19 @@ public class Test {
         System.out.println(res.toString(16));
         BigInteger ran = Utils.generateK(res);
         System.out.println(ran.toString(16));
+    }
+    
+    public static void testArrayInput() {
+        String filepath = "C:\\Users\\Michael\\Documents\\GitHub\\Crypto-ECCEG\\testfile.txt";
+        ArrayList<BigInteger> data;
+        try {
+            data = IOUtils.getDataArray(filepath);
+            //System.out.println(data.toString(16));
+            for(BigInteger bi : data) {
+                System.out.println(bi);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

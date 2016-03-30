@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 /**
  *
@@ -40,6 +41,32 @@ public class IOUtils {
         Path path = Paths.get(address);
         byte[] data = Files.readAllBytes(path);
         return new BigInteger(data);
+    }
+    
+    public static ArrayList<BigInteger> getDataArray(String address) throws IOException {
+        ArrayList<BigInteger> ret = new ArrayList<>();
+        Path path = Paths.get(address);
+        byte[] data = Files.readAllBytes(path);
+        int len = data.length;
+        int padding = 8 - len%8;
+        for(int i = 0; i < len; i+=8) {
+            StringBuilder sb = new StringBuilder();
+            for(int j = 0; j < 8 && (i+j < len); j++) {
+                sb.append(data[i+j]);
+            }
+            ret.add(new BigInteger(sb.toString()));
+        }
+        if(padding != 0 && padding != 8) {
+            BigInteger lastInt = ret.get(ret.size()-1);
+            ret.remove(ret.size()-1);
+            String lastStr = lastInt.toString();
+            StringBuilder sb = new StringBuilder(lastStr);
+            for(int i = len; i < len+padding; i++) {
+                sb.append("00");
+            }
+            ret.add(new BigInteger(sb.toString()));
+        }
+        return ret;
     }
     
     public static void writeData(String address, BigInteger toWrite) throws IOException {

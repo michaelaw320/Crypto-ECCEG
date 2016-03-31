@@ -154,7 +154,7 @@ public class IOUtils {
         fos.close();
     }
     
-    public EllipticalCurve.Point readPublicKey(String address) throws IOException, ClassNotFoundException {
+    public static EllipticalCurve.Point readPublicKey(String address) throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(address);
         ObjectInputStream in = new ObjectInputStream(fis);
         EllipticalCurve.Point ret = (EllipticalCurve.Point) in.readObject();

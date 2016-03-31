@@ -34,6 +34,10 @@ public class MainFrame extends javax.swing.JFrame {
     private ArrayList<ECCEG.CipherPair> cipherData;
     private ArrayList<BigInteger> decipherResult;
     private ECCEG elgamal;
+    private BigInteger privateKey;
+    private EllipticalCurve.Point publicKey;
+    private boolean loadedKeyIsPrivate = false;
+    private boolean loadedKeyIsPublic = false;
     
     /**
      * Creates new form MainFrame
@@ -469,16 +473,22 @@ public class MainFrame extends javax.swing.JFrame {
         final JFileChooser fc = new JFileChooser();
         fc.setFileFilter(new FileNameExtensionFilter("Key File (*.pub, *.pri)", "pub", "pri"));
         
-        //try {
+        try {
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
                 keyPath = fc.getSelectedFile().getPath();
-                
+                if (keyPath.endsWith(".pri")) {
+                    privateKey = IOUtils.getData(keyPath);
+                    loadedKeyIsPrivate = true;
+                } else if (keyPath.endsWith(".pub")) {
+                    publicKey = IOUtils.readPublicKey(keyPath);
+                    loadedKeyIsPublic = true;
+                }
                 KeyFileLabel.setText(keyPath);
                 
             }
-        /*} catch (IOException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Error in loading Key\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }*/
+        } 
     }//GEN-LAST:event_OpenKeyButtonActionPerformed
 
     private void OpenFileButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFileButton1ActionPerformed
@@ -510,7 +520,7 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
         ArrayList<BigInteger> data = IOUtils.getDataArray(filePath);
-        elgamal=new ECCEG(EllipticalCurve.P192.Prime);
+        elgamal=new ECCEG(EllipticalCurve.P192.Prime, publicKey);
         resultCipher = elgamal.encrypt(data);
         CiphertextText.setText(IOUtils.formattedOutput(resultCipher));
         long timeTaken = elgamal.getTimeTakenInMs();
@@ -524,7 +534,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void DecryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DecryptButtonActionPerformed
         // TODO add your handling code here:
         try {
-        //ECCEG elgamal=new ECCEG(EllipticalCurve.P192.Prime);
+        elgamal=new ECCEG(EllipticalCurve.P192.Prime, privateKey);
         decipherResult = elgamal.decrypt(cipherData);
         
         IOUtils.writeDataFromList("temp.txt", decipherResult);

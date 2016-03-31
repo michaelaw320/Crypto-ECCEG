@@ -95,9 +95,9 @@ public class ECCEG {
         long startTime = System.currentTimeMillis();
         ArrayList<CipherPair> result = new ArrayList<>();
         //Pilih suatu kb [0,P-1]
-        privateKey=Utils.generateK(prime);
-        publicKey= ecc.coefMultiply(privateKey,EllipticalCurve.P192.basePoint);
-        System.out.println("private-key:"+privateKey+"\n"+"public-key:("+publicKey.getX()+","+publicKey.getY()+")");
+        //privateKey=Utils.generateK(prime);
+        //publicKey= ecc.coefMultiply(privateKey,EllipticalCurve.P192.basePoint);
+        //System.out.println("private-key:"+privateKey+"\n"+"public-key:("+publicKey.getX()+","+publicKey.getY()+")");
         //convert each message to point
         System.out.println("Encrypted");
         for(BigInteger m : messages){

@@ -103,7 +103,7 @@ public class MainFrame extends javax.swing.JFrame {
         setResizable(false);
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("13512046 - 13512079");
+        jLabel5.setText("13512046 - 13512078");
         jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         OpenFileButton.setText("Open File");

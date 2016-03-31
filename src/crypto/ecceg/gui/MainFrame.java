@@ -5,11 +5,15 @@
  */
 package crypto.ecceg.gui;
 
+import crypto.ecceg.logic.ECCEG;
+import crypto.ecceg.logic.EllipticalCurve;
 import crypto.ecceg.utils.IOUtils;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -26,7 +30,10 @@ public class MainFrame extends javax.swing.JFrame {
 
     private String filePath;
     private String keyPath;
-    private BigInteger processedData;
+    private ArrayList<ECCEG.CipherPair> resultCipher;
+    private ArrayList<ECCEG.CipherPair> cipherData;
+    private ArrayList<BigInteger> decipherResult;
+    private ECCEG elgamal;
     
     /**
      * Creates new form MainFrame
@@ -477,12 +484,13 @@ public class MainFrame extends javax.swing.JFrame {
                 
                 FileNameLabel1.setText(fc.getSelectedFile().getName());
                 
-                CiphertextTextTab2.setText(IOUtils.formattedOutput(IOUtils.getData(filePath)));
+                cipherData = IOUtils.readCipherFile(filePath);
+                CiphertextTextTab2.setText(IOUtils.formattedOutput(cipherData));
 
             }
-        } catch (IOException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Error in loading File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        } 
         
     }//GEN-LAST:event_OpenFileButton1ActionPerformed
 
@@ -495,28 +503,32 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void EncryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EncryptButtonActionPerformed
         // TODO add your handling code here:
-        
-                String filesize;
         try {
-            filesize = Long.toString(IOUtils.getFilesize(filePath)) + " bytes";
-            FileSizeLabel.setText(filesize);
+        ArrayList<BigInteger> data = IOUtils.getDataArray(filePath);
+        elgamal=new ECCEG(EllipticalCurve.P192.Prime);
+        resultCipher = elgamal.encrypt(data);
+        CiphertextText.setText(IOUtils.formattedOutput(resultCipher));
+        SaveCiphertextButton.setEnabled(true);
         } catch (IOException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        SaveCiphertextButton.setEnabled(true);
-
     }//GEN-LAST:event_EncryptButtonActionPerformed
 
     private void DecryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DecryptButtonActionPerformed
         // TODO add your handling code here:
-        String filesize;
         try {
-            filesize = Long.toString(IOUtils.getFilesize(filePath)) + " bytes";
-            FileSizeLabel1.setText(filesize);
+        //ECCEG elgamal=new ECCEG(EllipticalCurve.P192.Prime);
+        decipherResult = elgamal.decrypt(cipherData);
+        
+        IOUtils.writeDataFromList("temp.txt", decipherResult);
+        PlaintextTextTab2.setText(IOUtils.getStringData("temp.txt"));
+        File file = new File("temp.txt");
+        file.delete();
+        
+        SavePlaintextButton.setEnabled(true);
         } catch (IOException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        SavePlaintextButton.setEnabled(true);
     }//GEN-LAST:event_DecryptButtonActionPerformed
 
     private void SaveCiphertextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveCiphertextButtonActionPerformed
@@ -526,7 +538,10 @@ public class MainFrame extends javax.swing.JFrame {
              if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION){
                 String fileLocation = fc.getSelectedFile().getPath();
                 //get data
-                IOUtils.writeData(fileLocation, processedData);
+                IOUtils.writeCipherFile(fileLocation, resultCipher);
+                String filesize;
+                    filesize = Long.toString(IOUtils.getFilesize(fileLocation)) + " bytes";
+                    FileSizeLabel.setText(filesize);
             }
             
         } catch (IOException ex) {
@@ -535,8 +550,21 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_SaveCiphertextButtonActionPerformed
 
     private void SavePlaintextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SavePlaintextButtonActionPerformed
-        // TODO add your handling code here:
-        SaveCiphertextButtonActionPerformed(evt);
+        final JFileChooser fc = new JFileChooser();
+        try {
+            // TODO add your handling code here:
+             if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION){
+                String fileLocation = fc.getSelectedFile().getPath();
+                //get data
+                IOUtils.writeDataFromList(fileLocation, decipherResult);
+                String filesize;
+                    filesize = Long.toString(IOUtils.getFilesize(fileLocation)) + " bytes";
+                    FileSizeLabel1.setText(filesize);
+            }
+            
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error in saving File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_SavePlaintextButtonActionPerformed
 
     /**

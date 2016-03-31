@@ -508,6 +508,8 @@ public class MainFrame extends javax.swing.JFrame {
         elgamal=new ECCEG(EllipticalCurve.P192.Prime);
         resultCipher = elgamal.encrypt(data);
         CiphertextText.setText(IOUtils.formattedOutput(resultCipher));
+        long timeTaken = elgamal.getTimeTakenInMs();
+        TimeTakenLabel.setText(Long.toString(timeTaken) + " ms");
         SaveCiphertextButton.setEnabled(true);
         } catch (IOException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -524,6 +526,9 @@ public class MainFrame extends javax.swing.JFrame {
         PlaintextTextTab2.setText(IOUtils.getStringData("temp.txt"));
         File file = new File("temp.txt");
         file.delete();
+        
+        long timeTaken = elgamal.getTimeTakenInMs();
+        TimeTakenLabel1.setText(Long.toString(timeTaken) + " ms");
         
         SavePlaintextButton.setEnabled(true);
         } catch (IOException ex) {

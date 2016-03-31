@@ -20,11 +20,16 @@ public class ECCEG {
     EllipticalCurve.Point publicKey;
     EllipticalCurve ecc;
     BigInteger kstatic=new BigInteger("1000");
+    private long timeTaken;
 
     public ECCEG(BigInteger prime){
         this.prime=prime;
         this.ecc=new EllipticalCurve(prime);
         ecc.eccEquation= EllipticalCurve.P192.equation;
+    }
+    
+    public long getTimeTakenInMs() {
+        return timeTaken;
     }
 
 //    public void generatePublicPrivateKeys(){
@@ -69,6 +74,8 @@ public class ECCEG {
     }
 
     public ArrayList<CipherPair> encrypt(ArrayList<BigInteger> messages) {
+        timeTaken = 0;
+        long startTime = System.currentTimeMillis();
         ArrayList<CipherPair> result = new ArrayList<>();
         //Pilih suatu kb [0,P-1]
         privateKey=Utils.generateK(prime);
@@ -82,6 +89,8 @@ public class ECCEG {
             //System.out.println(m+"-->"+"("+pm.getX()+","+pm.getY()+")");
             result.add(new CipherPair(ecc.coefMultiply(k,EllipticalCurve.P192.basePoint),ecc.add(pm,ecc.coefMultiply(k,publicKey))));
         }
+        long endTime = System.currentTimeMillis();
+        timeTaken = endTime-startTime;
         return result;
     }
     
@@ -90,6 +99,8 @@ public class ECCEG {
 //        EllipticalCurve.Point p=new EllipticalCurve.Point(new BigInteger("201"),new BigInteger("228"));
 //        BigInteger result=decodeMessage(p,k);
 //        System.out.println(result);
+        timeTaken = 0;
+        long startTime = System.currentTimeMillis();
         ArrayList<BigInteger> result=new ArrayList<>();
         for(CipherPair c:cipher){
             EllipticalCurve.Point bi=ecc.coefMultiply(privateKey,c.getP1());
@@ -97,6 +108,8 @@ public class ECCEG {
             //System.out.println("("+m.getX()+","+m.getY()+")");
             result.add(decodeMessage(m,kstatic).mod(prime));
         }
+        long endTime = System.currentTimeMillis();
+        timeTaken = endTime-startTime;
         return result;
     }
 

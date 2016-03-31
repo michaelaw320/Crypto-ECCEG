@@ -384,6 +384,11 @@ public class MainFrame extends javax.swing.JFrame {
         jTabbedPane1.addTab("Decrypt", jPanel4);
 
         GenerateKey.setText("Generate Key");
+        GenerateKey.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GenerateKeyActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -571,6 +576,41 @@ public class MainFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error in saving File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_SavePlaintextButtonActionPerformed
+
+    private void GenerateKeyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerateKeyActionPerformed
+        // TODO add your handling code here:
+        elgamal = new ECCEG(EllipticalCurve.P192.Prime);
+        elgamal.generatePublicPrivateKeys();
+        BigInteger privateKey = elgamal.getPrivateKey();
+        EllipticalCurve.Point publicKey = elgamal.getPublicKey();
+        final JFileChooser fc = new JFileChooser();
+        try {
+            fc.setFileFilter(new FileNameExtensionFilter("Private Key File (*.pri)", "pri"));
+            // TODO add your handling code here:
+             if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION){
+                String fileLocation = fc.getSelectedFile().getPath();
+                if (!fileLocation.endsWith(".pri")) fileLocation += ".pri";
+                //get data
+                IOUtils.writeData(fileLocation, privateKey);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        final JFileChooser fc2 = new JFileChooser();
+        try {
+            fc2.setFileFilter(new FileNameExtensionFilter("Public Key File (*.pub)", "pub"));
+            // TODO add your handling code here:
+             if (fc2.showSaveDialog(this) == JFileChooser.APPROVE_OPTION){
+                String fileLocation2 = fc2.getSelectedFile().getPath();
+                if (!fileLocation2.endsWith(".pub")) fileLocation2 += ".pub";
+                //get data
+                IOUtils.writePublicKey(fileLocation2, publicKey);
+                
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error in saving File\nMessage:" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_GenerateKeyActionPerformed
 
     /**
      * @param args the command line arguments

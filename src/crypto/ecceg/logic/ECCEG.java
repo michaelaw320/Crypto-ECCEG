@@ -27,16 +27,33 @@ public class ECCEG {
         this.ecc=new EllipticalCurve(prime);
         ecc.eccEquation= EllipticalCurve.P192.equation;
     }
+    public ECCEG(BigInteger prime, BigInteger _privateKey){
+        this.prime=prime;
+        this.ecc=new EllipticalCurve(prime);
+        ecc.eccEquation= EllipticalCurve.P192.equation;
+        privateKey = _privateKey;
+    }
+    public ECCEG(BigInteger prime, EllipticalCurve.Point _publicKey){
+        this.prime=prime;
+        this.ecc=new EllipticalCurve(prime);
+        ecc.eccEquation= EllipticalCurve.P192.equation;
+        publicKey = _publicKey;
+    }
     
     public long getTimeTakenInMs() {
         return timeTaken;
     }
 
-//    public void generatePublicPrivateKeys(){
-//        kA= Utils.generateK(EllipticalCurve.P192.Prime); //private kA
-//        publicKey= ecc.coefMultiply(kA,EllipticalCurve.P192.basePoint);
-//    }
-
+    public void generatePublicPrivateKeys(){
+        privateKey=Utils.generateK(prime);
+        publicKey= ecc.coefMultiply(privateKey,EllipticalCurve.P192.basePoint);
+    }
+    public BigInteger getPrivateKey() {
+        return privateKey;
+    }
+    public EllipticalCurve.Point getPublicKey() {
+        return publicKey;
+    }
 
     private EllipticalCurve.Point encodeMessage(BigInteger input){
         boolean found=false;

@@ -146,4 +146,19 @@ public class IOUtils {
         fis.close();
         return ret;
     }
+    
+    public static void writePublicKey(String address, EllipticalCurve.Point publicKey) throws IOException {
+        FileOutputStream fos = new FileOutputStream(address);
+        ObjectOutputStream out = new ObjectOutputStream(fos);
+        out.writeObject(publicKey);
+        fos.close();
+    }
+    
+    public EllipticalCurve.Point readPublicKey(String address) throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(address);
+        ObjectInputStream in = new ObjectInputStream(fis);
+        EllipticalCurve.Point ret = (EllipticalCurve.Point) in.readObject();
+        fis.close();
+        return ret;
+    }
 }
